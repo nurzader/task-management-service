@@ -8,6 +8,8 @@ import kg.nurzada.taskmanagement.mappers.TaskMapper;
 import kg.nurzada.taskmanagement.repositories.TaskRepository;
 import kg.nurzada.taskmanagement.services.TaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,12 +17,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
 
     @Override
+    @CacheEvict(value = "tasks", allEntries = true)
     public TaskResponse create(TaskRequest taskRequest) {
         Task task = taskMapper.toEntity(taskRequest);
         Task saved = taskRepository.save(task);
@@ -28,6 +32,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Cacheable(value = "tasks", key = "'all'")
     @Transactional(readOnly = true)
     public List<TaskResponse> findAll() {
         return taskRepository.findAll().stream()
@@ -42,6 +47,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @CacheEvict(value = "tasks", allEntries = true)
     public TaskResponse update(Long id, TaskRequest taskRequest) {
         Task existing = findOrThrow(id);
         existing.setTitle(taskRequest.title());
@@ -53,6 +59,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @CacheEvict(value = "tasks", allEntries = true)
     public void delete(Long id) {
         if (!taskRepository.existsById(id)) {
             throw new TaskNotFoundException(id);

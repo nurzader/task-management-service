@@ -17,6 +17,14 @@ spring:
     user:
       name: ${APP_USER:admin}
       password: ${APP_PASSWORD:admin123}
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  cache:
+    type: redis
+    redis:
+      time-to-live: 10m
 
 app:
   external:

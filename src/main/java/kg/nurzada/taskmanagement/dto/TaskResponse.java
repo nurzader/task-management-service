@@ -2,6 +2,7 @@ package kg.nurzada.taskmanagement.dto;
 
 import kg.nurzada.taskmanagement.enums.TaskStatus;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 public record TaskResponse(
@@ -10,5 +11,5 @@ public record TaskResponse(
         String description,
         TaskStatus status,
         Instant createdAt
-) {
+) implements Serializable {
 }
