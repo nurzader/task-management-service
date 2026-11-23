@@ -1,3 +1,46 @@
 spring:
   application:
     name: task-management-service
+  datasource:
+    url: jdbc:h2:mem:taskdb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: update
+  security:
+    user:
+      name: ${APP_USER:admin}
+      password: ${APP_PASSWORD:admin123}
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  cache:
+    type: redis
+    redis:
+      time-to-live: 10m
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+app:
+  external:
+    url: https://api.restful-api.dev/objects
+    fetch-on-startup: true
+  mail:
+    to: ${MAIL_TO:}
+
+logging:
+  level:
+    kg.nurzada.taskmanagement: INFO
