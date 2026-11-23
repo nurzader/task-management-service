@@ -13,10 +13,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+  security:
+    user:
+      name: ${APP_USER:admin}
+      password: ${APP_PASSWORD:admin123}
 
 app:
   external:
