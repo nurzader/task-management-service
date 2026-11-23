@@ -1,5 +1,6 @@
 package kg.nurzada.taskmanagement;
 
+import kg.nurzada.taskmanagement.dto.TaskCreatedEvent;
 import kg.nurzada.taskmanagement.dto.TaskRequest;
 import kg.nurzada.taskmanagement.dto.TaskResponse;
 import kg.nurzada.taskmanagement.entities.Task;
@@ -7,6 +8,7 @@ import kg.nurzada.taskmanagement.enums.TaskStatus;
 import kg.nurzada.taskmanagement.exceptions.TaskNotFoundException;
 import kg.nurzada.taskmanagement.mappers.TaskMapper;
 import kg.nurzada.taskmanagement.repositories.TaskRepository;
+import kg.nurzada.taskmanagement.services.EmailService;
 import kg.nurzada.taskmanagement.services.impl.TaskServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.time.Instant;
 import java.util.List;
@@ -31,6 +34,9 @@ public class TaskServiceTest {
 
     @Mock
     private TaskRepository taskRepository;
+
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @Spy
     private TaskMapper taskMapper = new TaskMapper();
@@ -67,6 +73,7 @@ public class TaskServiceTest {
         assertThat(result.title()).isEqualTo("Новая задача");
         assertThat(result.status()).isEqualTo(TaskStatus.IN_PROGRESS);
         verify(taskRepository).save(any(Task.class));
+        verify(eventPublisher).publishEvent(any(TaskCreatedEvent.class));
     }
 
     @Test

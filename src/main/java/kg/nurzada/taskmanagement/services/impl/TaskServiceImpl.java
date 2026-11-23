@@ -1,5 +1,6 @@
 package kg.nurzada.taskmanagement.services.impl;
 
+import kg.nurzada.taskmanagement.dto.TaskCreatedEvent;
 import kg.nurzada.taskmanagement.dto.TaskRequest;
 import kg.nurzada.taskmanagement.dto.TaskResponse;
 import kg.nurzada.taskmanagement.entities.Task;
@@ -10,6 +11,7 @@ import kg.nurzada.taskmanagement.services.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,13 +24,15 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @CacheEvict(value = "tasks", allEntries = true)
     public TaskResponse create(TaskRequest taskRequest) {
-        Task task = taskMapper.toEntity(taskRequest);
-        Task saved = taskRepository.save(task);
-        return taskMapper.toResponse(saved);
+        Task saved = taskRepository.save(taskMapper.toEntity(taskRequest));
+        TaskResponse response = taskMapper.toResponse(saved);
+        eventPublisher.publishEvent(new TaskCreatedEvent(response));
+        return response;
     }
 
     @Override
