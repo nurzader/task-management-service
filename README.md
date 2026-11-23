@@ -20,14 +20,15 @@ REST API для управления задачами. Java 21, Spring Boot, H2,
 ## Запуск
 
 ```bash
-cp .env.example .env
 docker compose up --build
 ```
 
 Сервис: http://localhost:8080
 Тесты: `./mvnw test`
 
-## Настройки (`.env`)
+## Настройки
+
+Для отправки писем задайте `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_TO`.
 
 | Переменная | По умолчанию | Описание |
 |---|---|---|
